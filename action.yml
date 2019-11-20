@@ -1,0 +1,16 @@
+name: "trigger-mybinder-build"
+description: "Setup conda to use in later actions"
+author: "Sebastian Weigand"
+inputs:
+  branch:
+    description: "Name of the brachn which should be build, by mybinder.org. Default: 'master'"
+    required: false
+    default: "master"
+
+runs:
+  using: "node12"
+  main: "dist/index.js"
+
+branding:
+  icon: "code"
+  color: "yellow"
