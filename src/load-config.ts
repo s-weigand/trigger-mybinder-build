@@ -8,6 +8,7 @@ export interface TriggerBinderConfig {
   targetRepo: string
   serviceName: ServiceName
   targetState: string
+  debug: boolean
 }
 
 export const loadConfig = (): TriggerBinderConfig => {
@@ -16,7 +17,8 @@ export const loadConfig = (): TriggerBinderConfig => {
     required: true
   }) as ServiceName
   const targetState = core.getInput('target-state')
-  const config = { targetRepo, serviceName, targetState }
+  const debug = core.getInput('debug') === 'true'
+  const config = { targetRepo, serviceName, targetState, debug }
   validateConfig(config)
   return config
 }
