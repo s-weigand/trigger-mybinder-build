@@ -43,4 +43,4 @@ jobs:
         run: npm run release
       - uses: ./
         with:
-          target-repo: s-weigand/ipynb-share
+          target-repo: s-weigand/ipynb-share234523523523
