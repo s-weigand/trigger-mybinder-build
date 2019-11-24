@@ -1,8 +1,11 @@
 import * as core from '@actions/core'
+import { loadConfig } from './load-config'
+import { triggerBuilds } from './request_trigger'
 
-async function run(): Promise<void> {
+const run = async (): Promise<void> => {
   try {
-    const branch = core.getInput('branch')
+    const config = loadConfig()
+    await triggerBuilds(config)
   } catch (error) {
     core.setFailed(error.message)
   }

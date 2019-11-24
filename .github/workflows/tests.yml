@@ -1,4 +1,4 @@
-name: "Tests"
+name: 'Tests'
 on: [push, pull_request]
 
 jobs:
@@ -26,4 +26,21 @@ jobs:
       - name: Create fresh build release  compare file
         run: npm run release-compare-file
       - name: Test if the release and compare file are different
-        run: diff -qywBd dist/index.js compare/index.js
+        run: diff -ywBd --suppress-common-lines dist/index.js compare/index.js
+
+  test-integration:
+    runs-on: ${{ matrix.os }}
+    needs: [jest-tests, release-up-to-date]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build index.js
+        run: npm run release
+      - uses: ./
+        with:
+          target-repo: s-weigand/ipynb-share

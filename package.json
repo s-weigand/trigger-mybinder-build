@@ -1,6 +1,6 @@
 {
-  "name": "setup-conda",
-  "version": "1.0.0",
+  "name": "trigger-mybinder-build",
+  "version": "0.1.0",
   "private": true,
   "description": "Github Action to install conda",
   "main": "dist/index.js",
@@ -31,10 +31,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@actions/core": "^1.0.0",
-    "@actions/exec": "^1.0.1",
-    "@actions/io": "^1.0.1",
-    "@actions/tool-cache": "^1.1.2",
-    "temp": "^0.9.1"
+    "@actions/exec": "^1.0.1"
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",

@@ -1,16 +1,23 @@
-name: "trigger-mybinder-build"
-description: "Setup conda to use in later actions"
-author: "Sebastian Weigand"
+name: 'trigger-mybinder-build'
+description: 'Triggers the build of a repository on mybinder.org'
+author: 'Sebastian Weigand'
 inputs:
-  branch:
-    description: "Name of the brachn which should be build, by mybinder.org. Default: 'master'"
+  target-repo:
+    description: 'Repository which should be build by mybinder.org'
+    required: true
+  service-name:
+    description: "gh|gist|gl|git|zenodo|figshare Name of the service that hosts the repo. Default: 'gh'"
+    required: true
+    default: gh
+  target-state:
+    description: "Name of the branch, tag or commit which should be build, by mybinder.org. Default: 'master'"
     required: false
-    default: "master"
+    default: 'master'
 
 runs:
-  using: "node12"
-  main: "dist/index.js"
+  using: 'node12'
+  main: 'dist/index.js'
 
 branding:
-  icon: "code"
-  color: "yellow"
+  icon: 'code'
+  color: 'yellow'

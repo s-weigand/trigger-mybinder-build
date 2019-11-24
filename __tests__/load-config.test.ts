@@ -1,7 +1,9 @@
 import * as core from '@actions/core'
-
+import { loadConfig, ServiceName } from '../src/load-config'
 const testEnvVars = {
-  INPUT_BRANCH: 'mybranch'
+  'INPUT_TARGET-REPO': 'user_name/repo_name',
+  'INPUT_SERVICE-NAME': 'gist',
+  'INPUT_TARGET-STATE': 'bar'
 }
 
 describe('Reading of the config', () => {
@@ -18,7 +20,9 @@ describe('Reading of the config', () => {
   })
 
   it('test config values', () => {
-    const branch = core.getInput('branch')
-    expect(branch).toEqual('mybranch')
+    const config = loadConfig()
+    expect(config.targetRepo).toEqual('user_name/repo_name')
+    expect(config.serviceName).toEqual('gist')
+    expect(config.targetState).toEqual('bar')
   })
 })
