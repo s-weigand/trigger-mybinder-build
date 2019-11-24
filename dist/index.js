@@ -894,7 +894,8 @@ exports.loadConfig = () => {
         required: true
     });
     const targetState = core.getInput('target-state');
-    const config = { targetRepo, serviceName, targetState };
+    const debug = core.getInput('debug') === 'true';
+    const config = { targetRepo, serviceName, targetState, debug };
     exports.validateConfig(config);
     return config;
 };
@@ -961,35 +962,34 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core = __importStar(__webpack_require__(470));
 const exec = __importStar(__webpack_require__(986));
-const requestBuild = (url) => __awaiter(this, void 0, void 0, function* () {
-    let response = '';
-    let error = '';
-    const options = { listeners: {} };
-    options.listeners = {
-        stdout: (data) => {
-            response += data.toString();
+const requestBuild = (url, silent) => __awaiter(this, void 0, void 0, function* () {
+    let errorMsg = '';
+    const options = {
+        listeners: {
+            stdout: (data) => {
+                errorMsg += data.toString();
+            }
         },
-        stderr: (data) => {
-            error += data.toString();
-        }
+        silent
     };
-    const statusCode = yield exec.exec('curl', [
-        '-L',
-        '--connect-timeout',
-        '10',
-        '--max-time',
-        '30',
-        url
-    ]);
-    if (statusCode === 0 || statusCode === 28) {
-        console.log(response);
+    try {
+        yield exec.exec('curl', ['-L', '--connect-timeout', '10', '--max-time', '30', url], options);
+        console.log('Your binder build isa done.');
     }
-    else {
-        console.log(error);
-        core.setFailed(`Something when wrong and the build could not be triggered at
-        ${url}`);
+    catch (statusCode) {
+        if (statusCode === 28) {
+            console.log('Binder build started.\nCheck back soon.\n');
+        }
+        else {
+            // console.log(errorMsg)
+            // core.setFailed(
+            //   `Something when wrong and the build could not be triggered at
+            //   ${url}`
+            // )
+            throw new Error(`Something when wrong and the build could not be triggered at
+        ${url}:\n\n${errorMsg}`);
+        }
     }
 });
 exports.triggerBuilds = (config) => {
@@ -1006,7 +1006,7 @@ exports.triggerBuilds = (config) => {
             url += '/' + targetState;
         }
         console.log(url);
-        requestBuild(url);
+        requestBuild(url, !config.debug);
     }
 };
 

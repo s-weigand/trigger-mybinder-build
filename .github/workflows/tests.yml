@@ -37,10 +37,6 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v1
-      - name: Install Dependencies
-        run: npm ci
-      - name: Build index.js
-        run: npm run release
       - uses: ./
         with:
           target-repo: s-weigand/ipynb-share234523523523

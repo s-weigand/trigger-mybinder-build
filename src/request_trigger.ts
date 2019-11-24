@@ -49,6 +49,6 @@ export const triggerBuilds = (config: TriggerBinderConfig): void => {
       url += '/' + targetState
     }
     console.log(url)
-    requestBuild(url, config.debug)
+    requestBuild(url, !config.debug)
   }
 }
