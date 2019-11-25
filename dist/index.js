@@ -1482,14 +1482,14 @@ exports.requestBuild = (url, debug) => __awaiter(this, void 0, void 0, function*
         }
         if (checkDone(startTime, timeOut, eventData)) {
             if (['launching', 'ready'].indexOf(eventData.phase) > -1) {
-                console.log('\nYour binder build is done.\n');
+                console.log(`${url}\nYour binder build is done.\n`);
             }
             else if (eventData.phase === 'building') {
-                console.log('\nBinder build started.\nCheck back soon.\n');
+                console.log(`${url}\nBinder build started.\nCheck back soon.\n`);
             }
             else {
                 source.close();
-                throw new Error(`Your binder build failed with the following
+                throw new Error(`${url}\nYour binder build failed with the following
           message:\n${eventData.message}`);
             }
             source.close();
@@ -1497,8 +1497,8 @@ exports.requestBuild = (url, debug) => __awaiter(this, void 0, void 0, function*
     });
     source.onerror = (event) => {
         source.close();
-        throw new Error(`An Error occurred requesting a binder build at:\n
-    ${url}\n\n${event.data}`);
+        throw new Error(`${url}\nAn Error occurred requesting a binder build:\n
+    ${event.data}`);
     };
 });
 const checkDone = (startTime, timeOut, eventData) => {
