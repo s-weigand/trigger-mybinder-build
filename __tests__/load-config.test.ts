@@ -1,4 +1,5 @@
 import { loadConfig } from '../src/load-config'
+
 const testEnvVars = {
   'INPUT_TARGET-REPO': 'user_name/repo_name',
   'INPUT_SERVICE-NAME': 'gist',

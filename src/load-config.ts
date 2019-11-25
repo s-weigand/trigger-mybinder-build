@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import { type } from 'os'
 
 const serviceNames = ['gh', 'gist', 'gl', 'git', 'zenodo', 'figshare'] as const
 
@@ -18,6 +17,10 @@ export const loadConfig = (): TriggerBinderConfig => {
   }) as ServiceName
   const targetState = core.getInput('target-state')
   const debug = core.getInput('debug') === 'true'
+  // const targetRepo = 's-weigand/python-tools-for-students'
+  // const serviceName = 'gh' as ServiceName
+  // const targetState = 'master'
+  // const debug = true
   const config = { targetRepo, serviceName, targetState, debug }
   validateConfig(config)
   return config

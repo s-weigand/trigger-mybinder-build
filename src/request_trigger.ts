@@ -1,37 +1,63 @@
-import * as core from '@actions/core'
-import * as exec from '@actions/exec'
+import EventSource from 'eventsource'
 
 import { TriggerBinderConfig } from './load-config'
-const requestBuild = async (url: string, silent: boolean): Promise<void> => {
-  let errorMsg = ''
-  const options = {
-    listeners: {
-      stdout: (data: Buffer) => {
-        errorMsg += data.toString()
-      }
-    },
-    silent
-  }
 
-  try {
-    await exec.exec(
-      'curl',
-      ['-L', '--connect-timeout', '10', '--max-time', '30', url],
-      options
-    )
-    console.log('Your binder build isa done.')
-  } catch (statusCode) {
-    if (statusCode === 28) {
-      console.log('Binder build started.\nCheck back soon.\n')
-    } else {
-      // console.log(errorMsg)
-      // core.setFailed(
-      //   `Something when wrong and the build could not be triggered at
-      //   ${url}`
-      // )
-      throw new Error(`Something when wrong and the build could not be triggered at
-        ${url}:\n\n${errorMsg}`)
+interface BuildServerResponse {
+  phase: string
+  message: string
+  [propName: string]: any
+}
+
+export const requestBuild = async (
+  url: string,
+  debug: boolean
+): Promise<void> => {
+  const timeOut = 30000
+  const startTime = new Date().getTime()
+  const source = new EventSource(url)
+
+  source.onmessage = ((event: MessageEvent) => {
+    const eventData = JSON.parse(event.data) as BuildServerResponse
+    if (debug) {
+      console.log(`BuildServerResponse(${url}): \n${eventData.message}\n`)
     }
+    if (checkDone(startTime, timeOut, eventData)) {
+      if (['launching', 'ready'].indexOf(eventData.phase) > -1) {
+        console.log('\nYour binder build is done.\n')
+      } else if (eventData.phase === 'building') {
+        console.log('\nBinder build started.\nCheck back soon.\n')
+      } else {
+        source.close()
+        throw new Error(
+          `Your binder build failed with the following
+          message:\n${eventData.message}`
+        )
+      }
+      source.close()
+    }
+  }) as EventListener
+
+  source.onerror = (event: MessageEvent) => {
+    source.close()
+    throw new Error(`An Error occurred requesting a binder build at:\n
+    ${url}\n\n${event.data}`)
+  }
+}
+
+const checkDone = (
+  startTime: number,
+  timeOut: number,
+  eventData: BuildServerResponse
+): boolean => {
+  if (
+    new Date().getTime() - startTime > timeOut &&
+    eventData.phase === 'building'
+  ) {
+    return true
+  } else if (['launching', 'ready', 'failed'].indexOf(eventData.phase) > -1) {
+    return true
+  } else {
+    return false
   }
 }
 
@@ -39,6 +65,7 @@ export const triggerBuilds = (config: TriggerBinderConfig): void => {
   const baseUrls: string[] = [
     'https://gke.mybinder.org/build',
     'https://ovh.mybinder.org/build'
+    // 'http://localhost:8000'
   ]
   const targetRepo: string = config.targetRepo
   const targetState: string = config.targetState
@@ -49,6 +76,8 @@ export const triggerBuilds = (config: TriggerBinderConfig): void => {
       url += '/' + targetState
     }
     console.log(url)
-    requestBuild(url, !config.debug)
+    requestBuild(url, config.debug).catch(reason => {
+      console.error(reason)
+    })
   }
 }
