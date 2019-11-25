@@ -1,9 +1,10 @@
-import * as core from '@actions/core'
-import { loadConfig, ServiceName } from '../src/load-config'
+import { loadConfig } from '../src/load-config'
+
 const testEnvVars = {
   'INPUT_TARGET-REPO': 'user_name/repo_name',
   'INPUT_SERVICE-NAME': 'gist',
-  'INPUT_TARGET-STATE': 'bar'
+  'INPUT_TARGET-STATE': 'bar',
+  INPUT_DEBUG: 'true'
 }
 
 describe('Reading of the config', () => {
@@ -24,5 +25,6 @@ describe('Reading of the config', () => {
     expect(config.targetRepo).toEqual('user_name/repo_name')
     expect(config.serviceName).toEqual('gist')
     expect(config.targetState).toEqual('bar')
+    expect(config.debug).toEqual(true)
   })
 })

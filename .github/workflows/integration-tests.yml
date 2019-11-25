@@ -1,0 +1,16 @@
+name: "Integration-Tests"
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+
+jobs:
+  test-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./
+        with:
+          target-repo: s-weigand/ipynb-share
