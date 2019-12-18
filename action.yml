@@ -1,0 +1,27 @@
+name: "Trigger binder build"
+description: "Triggers the build of a repository on mybinder.org"
+author: "Sebastian Weigand"
+inputs:
+  target-repo:
+    description: "Repository which should be build"
+    required: true
+  service-name:
+    description: "gh|gist|gl|git|zenodo|figshare Name of the service that hosts the repo. Default: 'gh'"
+    required: false
+    default: gh
+  target-state:
+    description: "Name of the branch, tag or commit which should be build. Default: 'master'"
+    required: false
+    default: "master"
+  debug:
+    description: "Weather to print debug information or not. Default: 'false'"
+    required: false
+    default: false
+
+runs:
+  using: "node12"
+  main: "dist/index.js"
+
+branding:
+  icon: "code"
+  color: "yellow"
