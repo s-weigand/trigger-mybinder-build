@@ -40,7 +40,7 @@ jobs:
   trigger-binder-build:
     runs-on: [ubuntu-latest]
     steps:
-      - uses: s-weigand/trigger-mybinder-build@master
+      - uses: s-weigand/trigger-mybinder-build@v1
         with:
           target-repo: <my-github-handle>/<my-repo-name>
 ```
@@ -56,7 +56,7 @@ jobs:
   trigger-binder-build:
     runs-on: [ubuntu-latest]
     steps:
-      - uses: s-weigand/trigger-mybinder-build@master
+      - uses: s-weigand/trigger-mybinder-build@v1
         with:
           target-repo: <my-gitlab-handle>/<my-repo-name>
           service-name: gl
