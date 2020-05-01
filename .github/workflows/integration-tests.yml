@@ -11,6 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: ./
+      - name: Install Dependencies
+        run: npm ci
+      - name: Test Build
+        run: npm run package
+      - name: Test success
+        uses: ./
         with:
           target-repo: s-weigand/ipynb-share
+          debug: true
+      - name: Test fail
+        continue-on-error: true
+        uses: ./
+        with:
+          target-repo: s-weigand/ipynb-share
+          target-state: not-a-branch
+          debug: true

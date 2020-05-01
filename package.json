@@ -2,7 +2,7 @@
   "name": "trigger-mybinder-build",
   "version": "1.0.0",
   "private": true,
-  "description": "Github Action to install conda",
+  "description": "Github Action to trigger repo builds at mybinder.org",
   "main": "dist/index.js",
   "scripts": {
     "test_build": "tsc",
@@ -13,11 +13,11 @@
     "format-check": "prettier --check **/*.ts",
     "lint": "tslint src/*",
     "execute": "ncc run src/main.ts",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/s-weigand/setup-conda.git"
+    "url": "git+https://github.com/s-weigand/trigger-mybinder-build"
   },
   "keywords": [
     "actions",
@@ -25,6 +25,8 @@
     "setup"
   ],
   "prettier": {
+    "trailingComma": "all",
+    "tabWidth": 2,
     "semi": false,
     "singleQuote": true
   },

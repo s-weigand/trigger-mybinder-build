@@ -98,3 +98,6 @@ typings/
 # ignore none relevat js files
 lib
 compare
+
+# ignore dist folder
+dist
