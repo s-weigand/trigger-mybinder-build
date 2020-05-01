@@ -63,9 +63,11 @@ const checkDone = (
 
 export const triggerBuilds = (config: TriggerBinderConfig): void => {
   const baseUrls: string[] = [
+    'https://mybinder.org/build',
     'https://gke.mybinder.org/build',
     'https://ovh.mybinder.org/build',
-    // 'http://localhost:8000'
+    'https://gesis.mybinder.org/build',
+    'https://turing.mybinder.org/build',
   ]
   const targetRepo: string = config.targetRepo
   const targetState: string = config.targetState
