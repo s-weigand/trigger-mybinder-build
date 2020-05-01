@@ -77,7 +77,7 @@ const request_trigger_1 = __webpack_require__(830);
 const run = () => __awaiter(this, void 0, void 0, function* () {
     try {
         const config = load_config_1.loadConfig();
-        yield request_trigger_1.triggerBuilds(config);
+        request_trigger_1.triggerBuilds(config);
     }
     catch (error) {
         core.setFailed(error.message);
@@ -1259,7 +1259,7 @@ const serviceNames = ['gh', 'gist', 'gl', 'git', 'zenodo', 'figshare'];
 exports.loadConfig = () => {
     const targetRepo = core.getInput('target-repo', { required: true });
     const serviceName = core.getInput('service-name', {
-        required: true
+        required: true,
     });
     const targetState = core.getInput('target-state');
     const debug = core.getInput('debug') === 'true';
@@ -1458,49 +1458,53 @@ module.exports = require("util");
 
 "use strict";
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const core = __importStar(__webpack_require__(470));
 const eventsource_1 = __importDefault(__webpack_require__(136));
-exports.requestBuild = (url, debug) => __awaiter(this, void 0, void 0, function* () {
+exports.requestBuild = (url, debug) => {
     const timeOut = 30000;
     const startTime = new Date().getTime();
     const source = new eventsource_1.default(url);
-    source.onmessage = ((event) => {
-        const eventData = JSON.parse(event.data);
-        if (debug) {
-            console.log(`BuildServerResponse(${url}): \n${eventData.message}\n`);
-        }
-        if (checkDone(startTime, timeOut, eventData)) {
-            if (['launching', 'ready'].indexOf(eventData.phase) > -1) {
-                console.log(`${url}\nYour binder build is done.\n`);
+    return new Promise((resolve, reject) => {
+        source.onmessage = ((event) => {
+            const eventData = JSON.parse(event.data);
+            if (debug) {
+                console.log(`BuildServerResponse(${url}): \n${eventData.message}\n`);
             }
-            else if (eventData.phase === 'building') {
-                console.log(`${url}\nBinder build started.\nCheck back soon.\n`);
-            }
-            else {
-                source.close();
-                throw new Error(`${url}\nYour binder build failed with the following
+            if (checkDone(startTime, timeOut, eventData)) {
+                if (['launching', 'ready'].indexOf(eventData.phase) > -1) {
+                    console.log(`${url}\nYour binder build is done.\n`);
+                    resolve('success');
+                }
+                else if (eventData.phase === 'building') {
+                    console.log(`${url}\nBinder build started.\nCheck back soon.\n`);
+                    resolve('success');
+                }
+                else {
+                    source.close();
+                    reject(`Build Error ${url}\nYour binder build failed with the following
           message:\n${eventData.message}`);
+                }
+                source.close();
             }
+        });
+        source.onerror = (event) => {
             source.close();
-        }
-    });
-    source.onerror = (event) => {
-        source.close();
-        throw new Error(`${url}\nAn Error occurred requesting a binder build:\n
+            reject(`Request Error ${url}\nAn Error occurred requesting a binder build:\n
     ${event.data}`);
-    };
-});
+        };
+    });
+};
 const checkDone = (startTime, timeOut, eventData) => {
     if (new Date().getTime() - startTime > timeOut &&
         eventData.phase === 'building') {
@@ -1515,23 +1519,34 @@ const checkDone = (startTime, timeOut, eventData) => {
 };
 exports.triggerBuilds = (config) => {
     const baseUrls = [
+        'https://mybinder.org/build',
         'https://gke.mybinder.org/build',
-        'https://ovh.mybinder.org/build'
-        // 'http://localhost:8000'
+        'https://ovh.mybinder.org/build',
+        'https://gesis.mybinder.org/build',
+        'https://turing.mybinder.org/build',
     ];
     const targetRepo = config.targetRepo;
     const targetState = config.targetState;
     const serviceName = config.serviceName;
+    const responses = [];
     for (let baseUrl of baseUrls) {
         let url = `${baseUrl}/${serviceName}/${targetRepo}`;
         if (targetState !== '') {
             url += '/' + targetState;
         }
-        console.log(url);
-        exports.requestBuild(url, config.debug).catch(reason => {
-            console.error(reason);
-        });
+        responses.push(exports.requestBuild(url, config.debug)
+            .then(() => true)
+            .catch(reason => {
+            core.error(`Error for ${url}:\n${reason}\n`);
+            return false;
+        }));
     }
+    // tslint:disable-next-line no-floating-promises
+    Promise.all(responses).then(values => {
+        if (values.indexOf(true) === -1) {
+            throw new Error('All requests to build the binder image have failed.');
+        }
+    });
 };
 
 
