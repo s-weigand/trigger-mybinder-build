@@ -13,7 +13,7 @@
     "format-check": "prettier --check **/*.ts",
     "lint": "tslint src/*",
     "execute": "ncc run src/main.ts",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
