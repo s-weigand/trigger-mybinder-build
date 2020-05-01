@@ -13,7 +13,7 @@ export interface TriggerBinderConfig {
 export const loadConfig = (): TriggerBinderConfig => {
   const targetRepo = core.getInput('target-repo', { required: true })
   const serviceName = core.getInput('service-name', {
-    required: true
+    required: true,
   }) as ServiceName
   const targetState = core.getInput('target-state')
   const debug = core.getInput('debug') === 'true'
@@ -48,7 +48,7 @@ export const validateConfig = (config: TriggerBinderConfig): void => {
  * @param serviceName
  */
 export function validServiceName(
-  serviceName: string
+  serviceName: string,
 ): serviceName is ServiceName {
   return (serviceNames as readonly string[]).includes(serviceName)
 }

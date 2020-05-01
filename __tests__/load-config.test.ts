@@ -4,7 +4,7 @@ const testEnvVars = {
   'INPUT_TARGET-REPO': 'user_name/repo_name',
   'INPUT_SERVICE-NAME': 'gist',
   'INPUT_TARGET-STATE': 'bar',
-  INPUT_DEBUG: 'true'
+  INPUT_DEBUG: 'true',
 }
 
 describe('Reading of the config', () => {

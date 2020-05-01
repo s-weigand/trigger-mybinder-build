@@ -4,14 +4,14 @@ describe('Testing requests', () => {
   it('test dummy request', async () => {
     await requestBuild(
       'https://gke.mybinder.org/build/gh/s-weigand/ipynb-share/master',
-      true
+      true,
     ).then(
       val => {
         console.log(val)
       },
       error => {
         console.log(error)
-      }
+      },
     )
   })
 })

@@ -10,7 +10,7 @@ interface BuildServerResponse {
 
 export const requestBuild = async (
   url: string,
-  debug: boolean
+  debug: boolean,
 ): Promise<void> => {
   const timeOut = 30000
   const startTime = new Date().getTime()
@@ -30,7 +30,7 @@ export const requestBuild = async (
         source.close()
         throw new Error(
           `${url}\nYour binder build failed with the following
-          message:\n${eventData.message}`
+          message:\n${eventData.message}`,
         )
       }
       source.close()
@@ -47,7 +47,7 @@ export const requestBuild = async (
 const checkDone = (
   startTime: number,
   timeOut: number,
-  eventData: BuildServerResponse
+  eventData: BuildServerResponse,
 ): boolean => {
   if (
     new Date().getTime() - startTime > timeOut &&
@@ -64,7 +64,7 @@ const checkDone = (
 export const triggerBuilds = (config: TriggerBinderConfig): void => {
   const baseUrls: string[] = [
     'https://gke.mybinder.org/build',
-    'https://ovh.mybinder.org/build'
+    'https://ovh.mybinder.org/build',
     // 'http://localhost:8000'
   ]
   const targetRepo: string = config.targetRepo
