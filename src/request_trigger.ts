@@ -3,6 +3,7 @@ import * as core from '@actions/core'
 import EventSource from 'eventsource'
 
 import { TriggerBinderConfig } from './load-config'
+import { resolve } from 'dns'
 
 interface BuildServerResponse {
   phase: string
@@ -10,40 +11,40 @@ interface BuildServerResponse {
   [propName: string]: any
 }
 
-export const requestBuild = async (
-  url: string,
-  debug: boolean,
-): Promise<void> => {
+export const requestBuild = (url: string, debug: boolean): Promise<string> => {
   const timeOut = 30000
   const startTime = new Date().getTime()
   const source = new EventSource(url)
-
-  source.onmessage = ((event: MessageEvent) => {
-    const eventData = JSON.parse(event.data) as BuildServerResponse
-    if (debug) {
-      console.log(`BuildServerResponse(${url}): \n${eventData.message}\n`)
-    }
-    if (checkDone(startTime, timeOut, eventData)) {
-      if (['launching', 'ready'].indexOf(eventData.phase) > -1) {
-        console.log(`${url}\nYour binder build is done.\n`)
-      } else if (eventData.phase === 'building') {
-        console.log(`${url}\nBinder build started.\nCheck back soon.\n`)
-      } else {
-        source.close()
-        throw new Error(
-          `${url}\nYour binder build failed with the following
-          message:\n${eventData.message}`,
-        )
+  return new Promise((resolve, reject) => {
+    source.onmessage = ((event: MessageEvent) => {
+      const eventData = JSON.parse(event.data) as BuildServerResponse
+      if (debug) {
+        console.log(`BuildServerResponse(${url}): \n${eventData.message}\n`)
       }
-      source.close()
-    }
-  }) as EventListener
+      if (checkDone(startTime, timeOut, eventData)) {
+        if (['launching', 'ready'].indexOf(eventData.phase) > -1) {
+          console.log(`${url}\nYour binder build is done.\n`)
+          resolve('success')
+        } else if (eventData.phase === 'building') {
+          console.log(`${url}\nBinder build started.\nCheck back soon.\n`)
+          resolve('success')
+        } else {
+          source.close()
+          reject(
+            `Build Error ${url}\nYour binder build failed with the following
+          message:\n${eventData.message}`,
+          )
+        }
+        source.close()
+      }
+    }) as EventListener
 
-  source.onerror = (event: MessageEvent) => {
-    source.close()
-    throw new Error(`${url}\nAn Error occurred requesting a binder build:\n
+    source.onerror = (event: MessageEvent) => {
+      source.close()
+      reject(`Request Error ${url}\nAn Error occurred requesting a binder build:\n
     ${event.data}`)
-  }
+    }
+  })
 }
 
 const checkDone = (
