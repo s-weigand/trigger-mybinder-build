@@ -5,7 +5,7 @@ import { triggerBuilds } from './request_trigger'
 const run = async (): Promise<void> => {
   try {
     const config = loadConfig()
-    await triggerBuilds(config)
+    triggerBuilds(config)
   } catch (error) {
     core.setFailed(error.message)
   }
