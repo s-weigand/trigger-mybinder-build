@@ -85,7 +85,7 @@ export const triggerBuilds = (config: TriggerBinderConfig): void => {
       requestBuild(url, config.debug)
         .then(() => true)
         .catch(reason => {
-          core.error(`Error for ${url}:\n\n${reason}`)
+          core.error(`Error for ${url}:\n${reason}\n`)
           return false
         }),
     )
