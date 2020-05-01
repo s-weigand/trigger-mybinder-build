@@ -1,3 +1,5 @@
+import * as core from '@actions/core'
+
 import EventSource from 'eventsource'
 
 import { TriggerBinderConfig } from './load-config'
@@ -72,14 +74,25 @@ export const triggerBuilds = (config: TriggerBinderConfig): void => {
   const targetRepo: string = config.targetRepo
   const targetState: string = config.targetState
   const serviceName: string = config.serviceName
+  const responses: Promise<boolean>[] = []
   for (let baseUrl of baseUrls) {
     let url: string = `${baseUrl}/${serviceName}/${targetRepo}`
     if (targetState !== '') {
       url += '/' + targetState
     }
-    console.log(url)
-    requestBuild(url, config.debug).catch(reason => {
-      console.error(reason)
-    })
+    responses.push(
+      requestBuild(url, config.debug)
+        .then(() => true)
+        .catch(reason => {
+          core.error(`Error for ${url}:\n\n${reason}`)
+          return false
+        }),
+    )
   }
+  // tslint:disable-next-line no-floating-promises
+  Promise.all(responses).then(values => {
+    if (values.indexOf(true) === -1) {
+      throw new Error('All requests to build the binder image have failed.')
+    }
+  })
 }
