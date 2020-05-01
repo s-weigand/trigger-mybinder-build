@@ -7,10 +7,10 @@ describe('Testing requests', () => {
       true,
     ).then(
       val => {
-        console.log(val)
+        console.log(`val: ${val}`)
       },
       error => {
-        console.log(error)
+        console.log(`error: ${error}`)
       },
     )
   })
