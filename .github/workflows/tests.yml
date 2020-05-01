@@ -1,4 +1,4 @@
-name: "Tests"
+name: 'Tests'
 on: [push, pull_request]
 
 jobs:
@@ -16,3 +16,7 @@ jobs:
         run: npm run lint
       - name: Running jest tests
         run: npm test
+      - name: Codecov Upload
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage/lcov.info
