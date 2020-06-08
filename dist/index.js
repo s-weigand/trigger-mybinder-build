@@ -1262,12 +1262,21 @@ exports.loadConfig = () => {
         required: true,
     });
     const targetState = core.getInput('target-state');
+    const useDefaultBuildServers = core.getInput('use-default-build-servers') === 'true';
+    const additionalBuildServers = core
+        .getInput('additional-build-servers')
+        .split('\n')
+        .map(additionalBuildServer => additionalBuildServer.trim())
+        .filter(additionalBuildServer => additionalBuildServer !== '');
     const debug = core.getInput('debug') === 'true';
-    // const targetRepo = 's-weigand/python-tools-for-students'
-    // const serviceName = 'gh' as ServiceName
-    // const targetState = 'master'
-    // const debug = true
-    const config = { targetRepo, serviceName, targetState, debug };
+    const config = {
+        targetRepo,
+        serviceName,
+        targetState,
+        useDefaultBuildServers,
+        additionalBuildServers,
+        debug,
+    };
     exports.validateConfig(config);
     return config;
 };
@@ -1282,6 +1291,12 @@ exports.validateConfig = (config) => {
         throw new Error(`The service ${serviceName} providing the repo
     is not compatible with the option 'target-state'.
     Have a look at https://mybinder.org/.`);
+    }
+    const useDefaultBuildServers = config.useDefaultBuildServers;
+    const additionalBuildServers = config.additionalBuildServers;
+    if (useDefaultBuildServers === false && additionalBuildServers.length === 0) {
+        throw new Error(`If the setting 'use-default-build-servers' is 'false', 'additional-build-server'
+    needs to be set to a not empty value.`);
     }
 };
 /**
@@ -1518,19 +1533,24 @@ const checkDone = (startTime, timeOut, eventData) => {
     }
 };
 exports.triggerBuilds = (config) => {
-    const baseUrls = [
-        'https://mybinder.org/build',
-        'https://gke.mybinder.org/build',
-        'https://ovh.mybinder.org/build',
-        'https://gesis.mybinder.org/build',
-        'https://turing.mybinder.org/build',
+    const defaultBaseUrls = [
+        'https://mybinder.org',
+        'https://gke.mybinder.org',
+        'https://ovh.mybinder.org',
+        'https://gesis.mybinder.org',
+        'https://turing.mybinder.org',
     ];
     const targetRepo = config.targetRepo;
     const targetState = config.targetState;
     const serviceName = config.serviceName;
+    const useDefaultBuildServers = config.useDefaultBuildServers;
+    const additionalBuildServers = config.additionalBuildServers;
+    const baseUrls = useDefaultBuildServers
+        ? [...defaultBaseUrls, ...additionalBuildServers]
+        : [...additionalBuildServers];
     const responses = [];
     for (let baseUrl of baseUrls) {
-        let url = `${baseUrl}/${serviceName}/${targetRepo}`;
+        let url = `${baseUrl}/build/${serviceName}/${targetRepo}`;
         if (targetState !== '') {
             url += '/' + targetState;
         }
