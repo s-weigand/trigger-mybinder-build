@@ -1,4 +1,4 @@
-name: "Integration-Tests"
+name: 'Integration-Tests'
 on:
   pull_request:
 
@@ -18,12 +18,21 @@ jobs:
       - name: Test success
         uses: ./
         with:
-          target-repo: s-weigand/ipynb-share
+          target-repo: s-weigand/flake8-nb
+          debug: true
+      - name: Test custom build server
+        continue-on-error: true
+        uses: ./
+        with:
+          target-repo: s-weigand/flake8-nb
+          use-default-build-servers: false
+          additional-build-servers: |
+            foo
           debug: true
       - name: Test fail
         continue-on-error: true
         uses: ./
         with:
-          target-repo: s-weigand/ipynb-share
+          target-repo: s-weigand/flake8-nb
           target-state: not-a-branch
           debug: true
