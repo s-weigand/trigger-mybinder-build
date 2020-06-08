@@ -1,4 +1,4 @@
-name: "Integration-Tests"
+name: 'Integration-Tests'
 on:
   pull_request:
 
@@ -19,6 +19,15 @@ jobs:
         uses: ./
         with:
           target-repo: s-weigand/ipynb-share
+          debug: true
+      - name: Test custom build server
+        continue-on-error: true
+        uses: ./
+        with:
+          target-repo: s-weigand/ipynb-share
+          use-default-build-servers: false
+          additional-build-server: |
+            foo
           debug: true
       - name: Test fail
         continue-on-error: true
