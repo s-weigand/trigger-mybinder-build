@@ -1,9 +1,9 @@
-name: "Trigger binder build"
-description: "Triggers the build of a repository on mybinder.org"
-author: "Sebastian Weigand"
+name: 'Trigger binder build'
+description: 'Triggers the build of a repository on mybinder.org'
+author: 'Sebastian Weigand'
 inputs:
   target-repo:
-    description: "Repository which should be build"
+    description: 'Repository which should be build'
     required: true
   service-name:
     description: "gh|gist|gl|git|zenodo|figshare Name of the service that hosts the repo. Default: 'gh'"
@@ -12,16 +12,24 @@ inputs:
   target-state:
     description: "Name of the branch, tag or commit which should be build. Default: 'master'"
     required: false
-    default: "master"
+    default: 'master'
+  use-default-build-servers:
+    description: 'Whether or not to use the default mybinder.org build servers. If false and additional-build-server is not specified, this will throw an error. Default: true'
+    required: false
+    default: true
+  additional-build-servers:
+    description: "Newline separated list of urls, which point do binder build servers base url. Default: ''"
+    required: false
+    default: ''
   debug:
-    description: "Weather to print debug information or not. Default: 'false'"
+    description: 'Weather to print debug information or not. Default: false'
     required: false
     default: false
 
 runs:
-  using: "node12"
-  main: "dist/index.js"
+  using: 'node12'
+  main: 'dist/index.js'
 
 branding:
-  icon: "code"
-  color: "yellow"
+  icon: 'code'
+  color: 'yellow'

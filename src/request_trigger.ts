@@ -65,7 +65,7 @@ const checkDone = (
 }
 
 export const triggerBuilds = (config: TriggerBinderConfig): void => {
-  const baseUrls: string[] = [
+  const defaultBaseUrls: string[] = [
     'https://mybinder.org',
     'https://gke.mybinder.org',
     'https://ovh.mybinder.org',
@@ -75,6 +75,11 @@ export const triggerBuilds = (config: TriggerBinderConfig): void => {
   const targetRepo: string = config.targetRepo
   const targetState: string = config.targetState
   const serviceName: string = config.serviceName
+  const useDefaultBuildServers: boolean = config.useDefaultBuildServers
+  const additionalBuildServers: string[] = config.additionalBuildServers
+  const baseUrls: string[] = useDefaultBuildServers
+    ? [...defaultBaseUrls, ...additionalBuildServers]
+    : [...additionalBuildServers]
   const responses: Promise<boolean>[] = []
   for (let baseUrl of baseUrls) {
     let url: string = `${baseUrl}/build/${serviceName}/${targetRepo}`
