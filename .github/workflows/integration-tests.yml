@@ -26,7 +26,7 @@ jobs:
         with:
           target-repo: s-weigand/flake8-nb
           use-default-build-servers: false
-          additional-build-server: |
+          additional-build-servers: |
             foo
           debug: true
       - name: Test fail
