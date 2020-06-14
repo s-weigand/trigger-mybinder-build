@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 
-import EventSource from 'eventsource'
+import EventSource, { EventSourceInitDict } from 'eventsource'
 
 import { TriggerBinderConfig } from './load-config'
 import { resolve } from 'dns'
@@ -44,6 +44,11 @@ export const requestBuild = (url: string, debug: boolean): Promise<string> => {
       reject(`Request Error ${url}\nAn Error occurred requesting a binder build:\n
     ${event.data}`)
     }
+    // fail save in case there are no messages and no errors
+    setTimeout(() => {
+      source.close()
+      reject('Request Error ${url}\nConnection timed out.')
+    }, timeOut + 10000)
   })
 }
 
