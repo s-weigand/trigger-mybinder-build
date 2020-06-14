@@ -4,7 +4,7 @@ describe('Testing requests', () => {
   it('test dummy request', () => {
     return expect(
       requestBuild(
-        'https://gke.mybinder.org/build/gh/s-weigand/ipynb-share/master',
+        'https://gke.mybinder.org/build/gh/s-weigand/flake8-nb/master',
         false,
       ),
     ).resolves.toBe('success')
@@ -12,7 +12,7 @@ describe('Testing requests', () => {
   it('test error request', () => {
     return expect(
       requestBuild(
-        'https://gke.mybinder.org/build/gh/s-weigand/ipynb-share/not-a-branch',
+        'https://gke.mybinder.org/build/gh/s-weigand/flake8-nb/not-a-branch',
         false,
       ),
     ).rejects.toMatch('Build Error')

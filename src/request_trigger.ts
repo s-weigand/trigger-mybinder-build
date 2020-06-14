@@ -3,7 +3,6 @@ import * as core from '@actions/core'
 import EventSource from 'eventsource'
 
 import { TriggerBinderConfig } from './load-config'
-import { resolve } from 'dns'
 
 interface BuildServerResponse {
   phase: string
@@ -13,6 +12,7 @@ interface BuildServerResponse {
 
 export const requestBuild = (url: string, debug: boolean): Promise<string> => {
   const timeOut = 30000
+  const maxTimeOut = timeOut + 10000
   const startTime = new Date().getTime()
   const source = new EventSource(url)
   return new Promise((resolve, reject) => {
@@ -44,6 +44,14 @@ export const requestBuild = (url: string, debug: boolean): Promise<string> => {
       reject(`Request Error ${url}\nAn Error occurred requesting a binder build:\n
     ${event.data}`)
     }
+    // fail save in case there are no messages and no errors
+    setTimeout(() => {
+      source.close()
+      reject(
+        `Request Error ${url}\nConnection timed out, via fail save after ${maxTimeOut /
+          1000}s.`,
+      )
+    }, maxTimeOut)
   })
 }
 
