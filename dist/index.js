@@ -1488,6 +1488,7 @@ const core = __importStar(__webpack_require__(470));
 const eventsource_1 = __importDefault(__webpack_require__(136));
 exports.requestBuild = (url, debug) => {
     const timeOut = 30000;
+    const maxTimeOut = timeOut + 10000;
     const startTime = new Date().getTime();
     const source = new eventsource_1.default(url);
     return new Promise((resolve, reject) => {
@@ -1518,6 +1519,12 @@ exports.requestBuild = (url, debug) => {
             reject(`Request Error ${url}\nAn Error occurred requesting a binder build:\n
     ${event.data}`);
         };
+        // fail save in case there are no messages and no errors
+        setTimeout(() => {
+            source.close();
+            reject(`Request Error ${url}\nConnection timed out, via fail save after ${maxTimeOut /
+                1000}s.`);
+        }, maxTimeOut);
     });
 };
 const checkDone = (startTime, timeOut, eventData) => {
