@@ -48,8 +48,9 @@ export const requestBuild = (url: string, debug: boolean): Promise<string> => {
     setTimeout(() => {
       source.close()
       reject(
-        `Request Error ${url}\nConnection timed out, via fail save after ${maxTimeOut /
-          1000}s.`,
+        `Request Error ${url}\nConnection timed out, via fail save after ${
+          maxTimeOut / 1000
+        }s.`,
       )
     }, maxTimeOut)
   })
@@ -97,14 +98,14 @@ export const triggerBuilds = (config: TriggerBinderConfig): void => {
     responses.push(
       requestBuild(url, config.debug)
         .then(() => true)
-        .catch(reason => {
+        .catch((reason) => {
           core.error(`Error for ${url}:\n${reason}\n`)
           return false
         }),
     )
   }
   // tslint:disable-next-line no-floating-promises
-  Promise.all(responses).then(values => {
+  Promise.all(responses).then((values) => {
     if (values.indexOf(true) === -1) {
       throw new Error('All requests to build the binder image have failed.')
     }

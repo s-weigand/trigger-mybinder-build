@@ -23,8 +23,8 @@ export const loadConfig = (): TriggerBinderConfig => {
   const additionalBuildServers = core
     .getInput('additional-build-servers')
     .split('\n')
-    .map(additionalBuildServer => additionalBuildServer.trim())
-    .filter(additionalBuildServer => additionalBuildServer !== '')
+    .map((additionalBuildServer) => additionalBuildServer.trim())
+    .filter((additionalBuildServer) => additionalBuildServer !== '')
 
   const debug = core.getInput('debug') === 'true'
   const config = {
