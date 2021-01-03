@@ -4,7 +4,7 @@ describe('Testing requests', () => {
   it('test dummy request', () => {
     return expect(
       requestBuild(
-        'https://ovh.mybinder.org/build/gh/s-weigand/flake8-nb/master',
+        'https://ovh.mybinder.org/build/gh/s-weigand/flake8-nb/main',
         false,
       ),
     ).resolves.toBe('success')
