@@ -16,14 +16,14 @@ input and not read from the environment, since this prevents unnecessary builds 
 
 ## Inputs
 
-| Name                        | Requirement | Default    | Description                                                                                                                                    |
-| --------------------------- | ----------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `target-repo`               | _required_  |            | Repository which should be build by mybinder.org .                                                                                             |
-| `service-name`              | _required_  | `'gh'`     | gh \| gist \| gl \| git \| zenodo \| figshare Name of the service that hosts the repo.                                                         |
-| `target-state`              | _optional_  | `'master'` | Name of the branch, tag or commit which should be build, by mybinder.org.                                                                      |
-| `use-default-build-servers` | _optional_  | `true`     | Whether or not to use the default mybinder.org build servers. If false and additional-build-server is not specified, this will throw an error. |
-| `additional-build-servers`  | _optional_  | `''`       | Newline separated list of urls, which point do binder build servers base url.                                                                  |
-| `debug`                     | _optional_  | `false`    | If this is true all server response messages will be printed to console.                                                                       |
+| Name                        | Requirement | Default | Description                                                                                                                                    |
+| --------------------------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `target-repo`               | _required_  |         | Repository which should be build by mybinder.org .                                                                                             |
+| `service-name`              | _required_  | `'gh'`  | gh \| gist \| gl \| git \| zenodo \| figshare Name of the service that hosts the repo.                                                         |
+| `target-state`              | _optional_  | `''`    | Name of the branch, tag or commit which should be build, by mybinder.org.                                                                      |
+| `use-default-build-servers` | _optional_  | `true`  | Whether or not to use the default mybinder.org build servers. If false and additional-build-server is not specified, this will throw an error. |
+| `additional-build-servers`  | _optional_  | `''`    | Newline separated list of urls, which point do binder build servers base url.                                                                  |
+| `debug`                     | _optional_  | `false` | If this is true all server response messages will be printed to console.                                                                       |
 
 ## Usage
 
