@@ -10,9 +10,9 @@ inputs:
     required: false
     default: gh
   target-state:
-    description: "Name of the branch, tag or commit which should be build. Default: 'master'"
+    description: "Name of the branch, tag or commit which should be build. Default: ''"
     required: false
-    default: 'master'
+    default: ''
   use-default-build-servers:
     description: 'Whether or not to use the default mybinder.org build servers. If false and additional-build-server is not specified, this will throw an error. Default: true'
     required: false
