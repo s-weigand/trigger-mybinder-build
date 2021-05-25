@@ -33,7 +33,7 @@
   "author": "Sebastian Weigand",
   "license": "Apache-2.0",
   "dependencies": {
-    "@actions/core": "^1.2.7",
+    "@actions/core": "^1.3.0",
     "eventsource": "^1.1.0"
   },
   "devDependencies": {
