@@ -17,6 +17,6 @@ jobs:
       - name: Running jest tests
         run: npm test
       - name: Codecov Upload
-        uses: codecov/codecov-action@v2.0.2
+        uses: codecov/codecov-action@v2
         with:
           file: ./coverage/lcov.info
