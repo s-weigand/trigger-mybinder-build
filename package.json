@@ -34,7 +34,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@actions/core": "^1.6.0",
-    "eventsource": "^2.0.0"
+    "eventsource": "^2.0.1"
   },
   "devDependencies": {
     "@types/eventsource": "^1.1.8",
